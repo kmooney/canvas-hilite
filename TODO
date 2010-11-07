@@ -1,0 +1,9 @@
+Canvas Highlighter 
+
+The library to use is in /lib, and there is a test file which is used by Selenium to verify that this is working in /test.
+
+Here's what still needs to be done:
+   o The mouse controls and cursor controls have a few bugs.  It's possible to navigate to somewhere that has no data.  Correct this.
+   o Start working on the highlighting tools!
+   o Start w/ javascript, then php tools.  Modular tool library.
+   

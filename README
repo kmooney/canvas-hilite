@@ -1,0 +1,4 @@
+Canvas Highlighter
+
+canvas-hilite is intended to be an HTML5 code editing tool that is a simple drop-in widget.  Code will be highlighted and displayed with viewports.  The highlighting mechanism will
+be modular.
