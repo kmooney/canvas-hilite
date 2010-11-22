@@ -1,4 +1,6 @@
-Canvas Highlighter
+canvas-hilite
 
-canvas-hilite is intended to be an HTML5 code editing tool that is a simple drop-in widget.  Code will be highlighted and displayed with viewports.  The highlighting mechanism will
-be modular.
+A Code Highlighter that goes way beyond typical iframe-based drop-ins.  This will act as a widget that uses Canvas Text to create a simple, drop-in editing widget.  The editor will allow the user to use their choice of typefaces, font sizes, and other attributes.  The widget will allow for intellegent selection of code elements, line numbering, and live highlighting.
+
+The plan is to make the highlighter modular to support multiple languages.
+
