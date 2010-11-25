@@ -3,8 +3,7 @@ Canvas Highlighter
 The library to use is in /lib, and there is a test file which is used by Selenium to verify that this is working in /test.
 
 Here's what still needs to be done:
-   o Highlighting tools need changes to turn off AFTER the toggle character is displayed.
    o Word wrap
    o Horizontal View port (when wrap is off)
-   o Start w/ javascript, then php tools.  Modular tool library.
+   o Start tool library.
    
