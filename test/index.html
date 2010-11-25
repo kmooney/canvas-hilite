@@ -2,11 +2,174 @@
 <html>
     <head>
         <script type="text/javascript" src="../lib/canvas-hilite.js"></script>
+		<script type="text/javascript" src="../include/qunit/qunit/qunit.js"></script>
+		<script type="text/javascript">
+			window.addEventListener('load', function(e) {
+				var paper = document.getElementById('notepad');
+			   
+			
+				test("Ensure that RenderState.copy() produces a different object with the same attributes.", function(e){
+					expect(2);
+					var render_state = new RenderState();
+					render_state.name = "Initial State";
+					var render_state2 = RenderState.copy(render_state);
+					deepEqual(render_state2, render_state, "Object and copy have same properties");
+					ok(render_state != render_state2, "Object and copy differ");
+				});
+				
+				test("Ensure that the CodeCanvas object has at least one line to focus on at initialization.", function(e){
+					var cc = new CodeCanvas(paper);
+					ok(cc.lines.length == 1);
+				});
+				
+				test("Ensure that keystrokes add text", function(e) {
+					var cc = new CodeCanvas(paper);
+					var test_string = "Test String.";
+					var string_length = test_string.length;
+					paper.focus();
+					for (var i = 0; i < string_length; i++) {
+						// simulates keystrokes
+						var keystroke_event = document.createEvent('KeyboardEvent');
+						keystroke_event.initKeyEvent('keypress', true,true,null,false,false,false,false,0,test_string.charCodeAt(i));
+						paper.dispatchEvent(keystroke_event);
+					}
+					ok(cc.lines[0] == test_string, "String was 'typed' into box.");
+				});
+				
+				test("Test continuous highlighting", function(e) {
+					expect(2);
+					var cc = new CodeCanvas(paper);
+				    var string_hilite = new RenderState();
+				    string_hilite.name = 'String';
+				    string_hilite.font_color="#090";
+				    string_hilite.continuous=true;
+				    cc.register_state('"', string_hilite, true);
+					var test_string = 'This is a "tes';
+					var string_length = test_string.length;
+				
+					for (var i = 0; i < string_length; i++) {
+						// simulates keystrokes
+						var keystroke_event = document.createEvent('KeyboardEvent');
+						keystroke_event.initKeyEvent('keypress', true,true,null,false,false,false,false,0,test_string.charCodeAt(i));
+						paper.dispatchEvent(keystroke_event);
+					}
+					ok(cc.render_state.font_color == '#090', "Highlight started");
+					test_string ='t." OK?';
+					for (var i = 0; i < string_length; i++) {
+						// simulates keystrokes
+						var keystroke_event = document.createEvent('KeyboardEvent');
+						keystroke_event.initKeyEvent('keypress', true,true,null,false,false,false,false,0,test_string.charCodeAt(i));
+						paper.dispatchEvent(keystroke_event);
+					}
+					ok(cc.render_state.font_color == '#000', "Highlight completed");
+				
+				});
+				
+				test("Viewport size is correct.", function(e) {
+					var cc = new CodeCanvas(paper);
+					expect(2);
+					ok(0 == cc.viewport.start, "Viewport starts at zero.");
+					ok(Math.floor(paper.height/(cc.render_state.font_size * 1.5)) == cc.viewport.end, "View port ends at height / line size");
+					
+				});
+				
+				test("Viewport moves up and down correctly.", function(e) {
+					var cc = new CodeCanvas(paper);
+					expect(2);
+					var test_string = "Test string.";
+					var string_length = test_string.length;
+					paper.focus();
+					var enter_keycode = 13;
+					var up_arrow = 38;
+					var viewport_size = Math.floor(paper.height/(cc.render_state.font_size * 1.5));
+					for (var i = 0; i < string_length; i++) {
+						var keystroke_event = document.createEvent('KeyboardEvent');
+						keystroke_event.initKeyEvent('keypress', true,true,null,false,false,false,false,0,test_string.charCodeAt(i));
+						paper.dispatchEvent(keystroke_event);
+					}
+					for (var i = 0; i < viewport_size; i++) {
+						keystroke_event.initKeyEvent('keypress', true,true,null,false,false,false,false,enter_keycode, enter_keycode);
+						paper.dispatchEvent(keystroke_event);
+					}	
+					
+					ok(cc.viewport.start==1, "Viewport moved");
+					
+					for (var i = 0; i < viewport_size; i++) {
+						keystroke_event.initKeyEvent('keypress', true,true,null,false,false,false,false,up_arrow,up_arrow);
+						paper.dispatchEvent(keystroke_event);
+					}
+					
+					ok(cc.lines[cc.viewport.start] == test_string, "Viewport returned");
+				});
+				
+				test("Continuous highlight works when highlight starts outside the viewport", function(e) {
+					var cc = new CodeCanvas(paper);
+					var test_string = "Test \"String.";
+					var string_length = test_string.length;
+					var enter_keycode = 13;
+					var viewport_size = Math.floor(paper.height/(cc.render_state.font_size * 1.5));
+				  	var string_hilite = new RenderState();
+					expect(1)
+				    string_hilite.name = 'String';
+				    string_hilite.font_color="#090";
+				    string_hilite.continuous=true;
+				    cc.register_state('"', string_hilite, true);
+					for (var i = 0; i < string_length; i++) {
+						var keystroke_event = document.createEvent('KeyboardEvent');
+						keystroke_event.initKeyEvent('keypress', true,true,null,false,false,false,false,0,test_string.charCodeAt(i));
+						paper.dispatchEvent(keystroke_event);
+					}
+					for (var i = 0; i < viewport_size; i++) {
+						keystroke_event.initKeyEvent('keypress', true,true,null,false,false,false,false,enter_keycode, enter_keycode);
+						paper.dispatchEvent(keystroke_event);						
+					}
+					ok(cc.render_state.name == "String");				
+				});
+				
+				test("Horizontal Viewport works", function(e) {
+
+				});
+				
+				test("Word wrap works", function(e) {
+					
+				});
+				
+				test("Keyword Highlight works", function(e) {
+					
+				});
+				
+				test("File length events work", function(e) {
+					
+				});
+				
+				test("Undo works", function(e) {
+					
+				});
+				
+				test("Load file works", function(e) {
+					
+				});
+				
+				test("Auto-closure works.", function(e) {
+					
+				});
+				
+			}, true);
+		</script>
+		
+		<link rel="stylesheet" href="../include/qunit/qunit/qunit.css" type="text/css"/>
     </head>
     <body>
-        <br><br>
-        <canvas id="notepad" style="border: 1px solid black" width="800" height="600" tabindex="1">
-        </canvas>
-
+			
+		<h1 id="qunit-header">canvas-hilite test results</h1>
+		<h2 id="qunit-banner"></h2>
+		<div id="qunit-testrunner-toolbar"></div>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
+		<div id="qunit-fixture">
+        	<canvas id="notepad" style="border: 1px solid black" width="800" height="300" tabindex="1">
+	        </canvas>
+		</div>
+		
     </body>
 </html>
