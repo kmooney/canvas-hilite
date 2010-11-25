@@ -102,7 +102,7 @@
 					ok(cc.lines[cc.viewport.start] == test_string, "Viewport returned");
 				});
 				
-				test("Continuous highlight works when highlight starts outside the viewport", function(e) {
+				test("Continuous highlight works when highlight rule is triggered before the viewport", function(e) {
 					var cc = new CodeCanvas(paper);
 					var test_string = "Test \"String.";
 					var string_length = test_string.length;
@@ -120,6 +120,7 @@
 						paper.dispatchEvent(keystroke_event);
 					}
 					for (var i = 0; i < viewport_size; i++) {
+						var keystroke_event = document.createEvent('KeyboardEvent');
 						keystroke_event.initKeyEvent('keypress', true,true,null,false,false,false,false,enter_keycode, enter_keycode);
 						paper.dispatchEvent(keystroke_event);						
 					}
@@ -127,7 +128,27 @@
 				});
 				
 				test("Horizontal Viewport works", function(e) {
-
+					var cc = new CodeCanvas(paper);
+					var viewport_width = Math.floor((paper.width - cc.gutter_size) / cc.emSize.width);
+					var keystroke_event = document.createEvent('KeyboardEvent');
+					expect(4);
+					ok(viewport_width == cc.viewport.right - cc.viewport.left, "Viewport width is correct");
+					
+					for (var i = 0; i < viewport_width + 5; i++) {
+						var my_string = new String(i%10);
+						var keycode = my_string.charCodeAt(0);
+						keystroke_event.initKeyEvent('keypress', true,true,null,false,false,false,false,0, keycode);
+						paper.dispatchEvent(keystroke_event);
+					}
+					ok(cc.viewport.left == 5, "Viewport moved to the right.  Expect 5, got "+cc.viewport.left);
+					// keystrokes to move back to the left
+					ok(cc.lines[0][cc.viewport.left] == 5, "Character at viewport start is correct.  Expect 5, got "+cc.lines[0][cc.viewport.left]);
+					for (var i = 0; i < viewport_width + 5; i++) {
+						keystroke_event.initKeyEvent('keypress',true,true,null,false,false,false,false,37,37);
+						paper.dispatchEvent(keystroke_event);
+					}
+					ok(cc.viewport.left == 0, "Viewport moved to the left - expect 0, got "+cc.viewport.left);
+					
 				});
 				
 				test("Word wrap works", function(e) {
@@ -166,10 +187,10 @@
 		<div id="qunit-testrunner-toolbar"></div>
 		<h2 id="qunit-userAgent"></h2>
 		<ol id="qunit-tests"></ol>
-		<div id="qunit-fixture">
+	<!-->	<div id="qunit-fixture">-->
         	<canvas id="notepad" style="border: 1px solid black" width="800" height="300" tabindex="1">
 	        </canvas>
-		</div>
+<!-->		</div> -->
 		
     </body>
 </html>
